@@ -6,7 +6,7 @@
     "php": "^7.2",
     "symfony/framework-bundle": "^4.1",
     "dawid-bednarz/sf-component-bundle": "dev-master",
-    "dawid-bednarz/php-status": "@dev",
+    "dawid-bednarz/php-status": "dev-master",
     "dawid-bednarz/php-user": "dev-master"
   },
   "autoload": {
