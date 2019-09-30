@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\DependencyInjection;
 
-use DawBed\UserBundle\Service\EntityService;
+use DawBed\PHPClassProvider\ClassProvider;
 use DawBed\UserBundle\Service\PasswordService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,7 +22,7 @@ class UserExtension extends Extension implements PrependExtensionInterface
 
     public function prepend(ContainerBuilder $container): void
     {
-        $container->setParameter('bundle_dir', dirname(__DIR__));
+        $container->setParameter('user_bundle_dir', dirname(__DIR__));
         $loader = $this->prepareLoader($container);
         $loader->load('services.yaml');
     }
@@ -32,7 +32,7 @@ class UserExtension extends Extension implements PrependExtensionInterface
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
         $this->prepareLoader($container);
-        $this->prepareEntityService($config['entities'], $container);
+        $this->prepareEntityProvider($config['entities'], $container);
         $this->preparePasswordService($config['password'], $container);
     }
 
@@ -46,16 +46,14 @@ class UserExtension extends Extension implements PrependExtensionInterface
         return new YamlFileLoader($containerBuilder, new FileLocator(dirname(__DIR__) . '/Resources/config'));
     }
 
-    private function prepareEntityService(array $entities, ContainerBuilder $container)
+    private function prepareEntityProvider(array $entities, ContainerBuilder $container) : void
     {
-        $container->setDefinition(EntityService::class, new Definition(EntityService::class, [[
-                'User' => $entities['user'],
-                'UserStatus' => $entities['userStatus']
-            ]]
-        ));
+        foreach ($entities as $name => $class) {
+            ClassProvider::add($name,$class);
+        }
     }
 
-    private function preparePasswordService(array $passwordOptions, ContainerBuilder $container)
+    private function preparePasswordService(array $passwordOptions, ContainerBuilder $container) : void
     {
         $container->setDefinition(PasswordService::class, new Definition(PasswordService::class, [
                 $passwordOptions['min_length'],

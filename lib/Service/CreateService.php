@@ -8,40 +8,37 @@
 
 namespace DawBed\UserBundle\Service;
 
-use DawBed\PHPUser\Model\User\Criteria\CreateCriteria;
-use DawBed\PHPUser\Model\User\CreateModel;
+use DawBed\PHPClassProvider\ClassProvider;
 use DawBed\PHPUser\Context;
+use DawBed\UserBundle\Entity\AbstractUser;
+use DawBed\UserBundle\Entity\AbstractUserStatus;
+use DawBed\UserBundle\Model\CreateModel;
+use DawBed\UserBundle\Model\Criteria\CreateCriteria;
 use Doctrine\ORM\EntityManagerInterface;
 use DawBed\StatusBundle\Service\CreateService as StatusCreateService;
 
 class CreateService
 {
     private $entityManager;
-    private $entityService;
     private $statusService;
     private $passwordService;
 
     function __construct(
         EntityManagerInterface $entityManager,
-        EntityService $entityService,
         StatusCreateService $statusService,
         PasswordService $passwordService
     )
     {
         $this->entityManager = $entityManager;
-        $this->entityService = $entityService;
         $this->statusService = $statusService;
         $this->passwordService = $passwordService;
     }
 
     public function prepareModel(CreateCriteria $criteria): CreateModel
     {
-        $user = new $this->entityService->User;
-        $userStatus = new $this->entityService->UserStatus;
-
         return new CreateModel(
-            $user,
-            $userStatus,
+            ClassProvider::new(AbstractUser::class),
+            ClassProvider::new(AbstractUserStatus::class),
             $criteria->getStatus(),
             $this->passwordService->getAlgorithm()
         );

@@ -1,0 +1,11 @@
+createUser:
+  path: /users
+  methods: [POST,OPTIONS]
+  controller: DawBed\UserBundle\Controller\UserController::create
+
+updateUser:
+  path: /users/{id}
+  requirements:
+    id: !php/const DawBed\ComponentBundle\Enum\UuidEnum::REGEX
+  methods: [UPDATE,OPTIONS]
+  controller: DawBed\UserBundle\Controller\UserController::update

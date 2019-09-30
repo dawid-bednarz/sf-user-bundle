@@ -7,28 +7,22 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\EventListener;
 
-use DawBed\PHPUser\UserStatusInterface;
-use DawBed\UserBundle\Service\EntityService;
+use DawBed\PHPClassProvider\ClassProvider;
+use DawBed\UserBundle\Entity\AbstractUser;
+use DawBed\UserBundle\Entity\AbstractUserStatus;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 
 class MappingListener
 {
-    private $entityService;
-
-    function __construct(EntityService $entityService)
-    {
-        $this->entityService = $entityService;
-    }
-
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
     {
         $classMetadata = $eventArgs->getClassMetadata();
 
-        if ($classMetadata->getName() !== $this->entityService->User) {
+        if ($classMetadata->getName() !== ClassProvider::get(AbstractUser::class)) {
             return;
         }
         $classMetadata->mapOneToMany(array(
-            'targetEntity' => UserStatusInterface::class,
+            'targetEntity' => ClassProvider::get(AbstractUserStatus::class),
             'fieldName' => 'statuses',
             'cascade' => ['persist'],
             'mappedBy' => 'user'

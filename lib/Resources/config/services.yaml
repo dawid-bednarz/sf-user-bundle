@@ -4,8 +4,8 @@ services:
         autoconfigure: true
         public: false
     DawBed\UserBundle\:
-        resource: '%bundle_dir%/*'
-        exclude: '%bundle_dir%/{DependencyInjection,Entity,Migrations,Tests}'
+        resource: '%user_bundle_dir%/*'
+        exclude: '%user_bundle_dir%/{DependencyInjection,Entity,Migrations,Tests}'
     DawBed\UserBundle\EventListener\MappingListener:
         tags:
             - { name: doctrine.event_listener, event: loadClassMetadata }

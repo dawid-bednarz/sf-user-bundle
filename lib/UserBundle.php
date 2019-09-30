@@ -26,7 +26,7 @@ class UserBundle extends Bundle
     private function addRegisterMappingsPass(ContainerBuilder $container)
     {
         $mappings = array(
-            realpath(__DIR__ . '/Resources/config/schema') => 'DawBed\PHPUser',
+            realpath(__DIR__ . '/Resources/config/schema') => 'DawBed\UserBundle\Entity',
         );
 
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {

@@ -8,8 +8,9 @@ declare(strict_types=1);
 namespace DawBed\UserBundle\DependencyInjection;
 
 use DawBed\ComponentBundle\Configuration\Entity;
-use DawBed\PHPUser\User;
-use DawBed\PHPUser\UserStatus;
+use DawBed\UserBundle\Entity\AbstractUser;
+use DawBed\UserBundle\Entity\AbstractUserStatus;
+use DawBed\UserBundle\Entity\User;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -25,8 +26,8 @@ class Configuration implements ConfigurationInterface
 
         $entity = new Entity($rootNode);
         $entity
-            ->new('user', User::class)
-            ->new('userStatus', UserStatus::class)
+            ->new(AbstractUser::class, AbstractUser::class)
+            ->new(AbstractUserStatus::class, AbstractUserStatus::class)
             ->end();
 
         return $treeBuilder;

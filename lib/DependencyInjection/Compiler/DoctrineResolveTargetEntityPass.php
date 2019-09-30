@@ -7,9 +7,9 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\DependencyInjection\Compiler;
 
-use DawBed\PHPUser\UserInterface;
-use DawBed\PHPUser\UserStatusInterface;
-use DawBed\UserBundle\Service\EntityService;
+use DawBed\PHPClassProvider\ClassProvider;
+use DawBed\UserBundle\Entity\AbstractUser;
+use DawBed\UserBundle\Entity\AbstractUserStatus;
 use Doctrine\ORM\Version;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -18,18 +18,16 @@ class DoctrineResolveTargetEntityPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $entityService = $container->get(EntityService::class);
-
         $definition = $container->findDefinition('doctrine.orm.listeners.resolve_target_entity');
 
         $definition->addMethodCall('addResolveTargetEntity', [
-            UserInterface::class,
-            $entityService->User,
+            AbstractUser::class,
+            ClassProvider::get(AbstractUser::class),
             [],
         ]);
         $definition->addMethodCall('addResolveTargetEntity', [
-            UserStatusInterface::class,
-            $entityService->UserStatus,
+            AbstractUserStatus::class,
+            ClassProvider::get(AbstractUserStatus::class),
             [],
         ]);
 
