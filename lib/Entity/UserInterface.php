@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace DawBed\UserBundle\Entity;
 
 use DateTime;
+use DawBed\StatusBundle\Entity\AbstractStatus;
 use Doctrine\Common\Collections\Collection;
 
 interface UserInterface
@@ -30,8 +31,8 @@ interface UserInterface
 
     public function getStatuses() : ?Collection;
 
-    public function addStatus(AbstractUserStatus $status): UserInterface;
+    public function addStatus(AbstractStatus $status): UserInterface;
 
-    public function removeStatus(AbstractUserStatus $status): UserInterface;
+    public function removeStatus(AbstractStatus $status): UserInterface;
 
 }

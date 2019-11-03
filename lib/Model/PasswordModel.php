@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\Model;
 
-use DawBed\UserBundle\Entity\UserInterface;
+use DawBed\UserBundle\Entity\AbstractUser;
 
 class PasswordModel
 {
@@ -23,7 +23,7 @@ class PasswordModel
         return password_hash($password, $this->algorithm);
     }
 
-    public static function valid(UserInterface $user, string $password): bool
+    public static function valid(AbstractUser $user, string $password): bool
     {
         if (password_verify($password, $user->getPassword()) !== false) {
             return true;

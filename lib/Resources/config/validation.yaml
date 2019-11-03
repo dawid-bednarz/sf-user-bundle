@@ -1,0 +1,10 @@
+DawBed\UserBundle\Model\WriteModel:
+      constraints:
+        - DawBed\ComponentBundle\Validator\Constraints\UniqueEntity:
+            entityClass: DawBed\UserBundle\Entity\AbstractUser
+            field: email
+            groups: [create, update]
+      properties:
+         email:
+           - NotBlank: { groups: [create, update] }
+           - Email: { groups: [create, update] }

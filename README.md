@@ -32,7 +32,23 @@ dawbed_user_bundle:
       min_length: 8
       algorithm: !php/const PASSWORD_ARGON2I
 ```
-
+#### 3 Register Listener (config/services.yaml)
+```yaml
+    App\EventListener\User\Registration\ErrorListener:
+       tags:
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::ERROR_RESPONSE }
+    App\EventListener\User\Crud\WriteListener:
+       tags:
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::CREATE_RESPONSE }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::UPDATE_RESPONSE }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::DELETE_ITEM_RESPONSE }
+    App\EventListener\User\Crud\GetItemListener:
+       tags:
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::GET_ITEM_RESPONSE }
+    App\EventListener\User\Crud\ListItemListener:
+       tags:
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::LIST_RESPONSE }
+```
 # COMMANDS
 Checking if you have all registered listeners
 ```

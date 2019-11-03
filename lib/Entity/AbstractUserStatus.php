@@ -7,9 +7,9 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\Entity;
 
-use DawBed\PHPContext\ContextInterface;
+use DawBed\StatusBundle\Entity\AbstractStatus;
 
-class AbstractUserStatus 
+abstract class AbstractUserStatus
 {
     protected $id;
     protected $status;
@@ -27,12 +27,12 @@ class AbstractUserStatus
         return $this->user;
     }
 
-    public function getStatus(): ContextInterface
+    public function getStatus(): AbstractStatus
     {
         return $this->status;
     }
 
-    public function setStatus(ContextInterface $status): AbstractUserStatus
+    public function setStatus(AbstractStatus $status): AbstractUserStatus
     {
         $this->status = $status;
 

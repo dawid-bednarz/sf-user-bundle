@@ -25,6 +25,7 @@ class MappingListener
             'targetEntity' => ClassProvider::get(AbstractUserStatus::class),
             'fieldName' => 'statuses',
             'cascade' => ['persist'],
+            'orphanRemoval' => true,
             'mappedBy' => 'user'
         ));
     }
