@@ -7,5 +7,34 @@ updateUser:
   path: /users/{id}
   requirements:
     id: !php/const DawBed\ComponentBundle\Enum\UuidEnum::REGEX
-  methods: [UPDATE,OPTIONS]
+  methods: [PUT,OPTIONS]
   controller: DawBed\UserBundle\Controller\UserController::update
+
+getItemUser:
+  path: /users/{id}
+  requirements:
+    id: !php/const DawBed\ComponentBundle\Enum\UuidEnum::REGEX
+  methods: [GET,OPTIONS]
+  controller: DawBed\UserBundle\Controller\UserController::item
+
+ListItemUser:
+  path: /users
+  methods: [GET,OPTIONS]
+  controller: DawBed\UserBundle\Controller\UserController::list
+
+listUserStatus:
+  path: /users/statuses
+  methods: [GET,OPTIONS]
+  controller: DawBed\UserBundle\Controller\UserController::statuses
+
+deleteItemUser:
+  path: /users/{id}
+  requirements:
+    id: !php/const DawBed\ComponentBundle\Enum\UuidEnum::REGEX
+  methods: [DELETE,OPTIONS]
+  controller: DawBed\UserBundle\Controller\UserController::delete
+
+changeUserPassword:
+  path: /users/change-password
+  methods: [POST,OPTIONS]
+  controller: DawBed\UserBundle\Controller\UserController::changePassword

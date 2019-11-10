@@ -30,11 +30,6 @@ class DoctrineResolveTargetEntityPass implements CompilerPassInterface
             ClassProvider::get(AbstractUserStatus::class),
             [],
         ]);
-
-        if (version_compare(Version::VERSION, '2.5.0-DEV') < 0) {
-            $definition->addTag('doctrine.event_listener', ['event' => 'loadClassMetadata']);
-        } else {
-            $definition->addTag('doctrine.event_subscriber', ['connection' => 'default']);
-        }
+        $definition->addTag('doctrine.event_subscriber', ['connection' => 'default']);
     }
 }

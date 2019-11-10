@@ -1,0 +1,5 @@
+dawbed_context_bundle:
+   types:
+      !php/const DawBed\UserBundle\Enum\ContextEnum::CHANGE_PASSWORD:
+         name: 'user.change_password'
+         groups: ['user']

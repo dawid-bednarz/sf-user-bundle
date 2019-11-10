@@ -8,11 +8,14 @@ declare(strict_types=1);
 namespace DawBed\UserBundle\Entity;
 
 use DateTime;
+use DawBed\PHPClassProvider\ClassProvider;
+use DawBed\StatusBundle\Entity\AbstractStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\PersistentCollection;
 
-class AbstractUser implements UserInterface
+abstract class AbstractUser implements UserInterface
 {
     protected $id;
 
@@ -84,20 +87,36 @@ class AbstractUser implements UserInterface
         return $this->statuses;
     }
 
-    public function addStatus(AbstractUserStatus $status): UserInterface
+    public function addStatus(AbstractStatus $status): UserInterface
     {
-        if (!$this->statuses->contains($status)) {
-            $status->setUser($this);
-            $this->statuses->add($status);
+        $criteria = Criteria::create();
+        $criteria->where(Criteria::expr()->eq('status', $status));
+        if (!$this->statuses->matching($criteria)->count()) {
+            $userStatus = ClassProvider::new(AbstractUserStatus::class);
+            $userStatus->setUser($this);
+            $userStatus->setStatus($status);
+            $this->statuses->add($userStatus);
         }
         return $this;
     }
 
-    public function removeStatus(AbstractUserStatus $status): UserInterface
+    public function removeStatus(AbstractStatus $status): UserInterface
     {
-        if ($this->statuses->contains($status)) {
-            $this->statuses->removeElement($status);
+        $criteria = Criteria::create();
+        $criteria->where(Criteria::expr()->eq('status', $status));
+        $matchingStatus = $this->statuses->matching($criteria);
+        if ($matchingStatus->count()) {
+            $this->statuses->removeElement($matchingStatus->first());
         }
         return $this;
     }
+
+    public function hasStatus(AbstractStatus $status): bool
+    {
+        $criteria = Criteria::create();
+        $criteria->where(Criteria::expr()->eq('status', $status));
+        $matchingStatus = $this->statuses->matching($criteria);
+        return $matchingStatus->count() > 0;
+    }
+
 }

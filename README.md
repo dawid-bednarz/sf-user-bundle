@@ -1,40 +1,46 @@
 # DESCRIPTION
-This is logic responsible for create user without context uses.
+CRUD User
 # INSTALLATION
 `composer require dawid-bednarz/sf-user-bundle`
 
-####1. Create entities file
-```php
-namespace App\Entity\User;
-
-use DawBed\PHPUser\User as Base;
-
-class User extends Base
-{
-}
-```
-```php
-namespace App\Entity\User;
-
-use DawBed\PHPUser\UserStatus as Base
-class UserStatus extends Base
-{
-}
-```
-#### 2. Create user_bundle.yaml in your ~/config/packages directory
+#### 1. Create user_bundle.yaml in your ~/config/packages directory
 ```yaml
 dawbed_user_bundle:
-    entities:
-      User: 'App\Entity\User\User'
-      UserStatus: 'App\Entity\User\UserStatus'
+   entities: # overwrite entities
+      DawBed\UserBundle\Entity\AbstractUser: App\Entity\User\User
+      DawBed\UserBundle\Entity\AbstractUserStatus: App\Entity\User\UserStatus
+      DawBed\UserBundle\Entity\AbstractUserToken: App\Entity\User\UserToken
    password:
-      auto_generate: true
-      min_length: 8
+      min_length: 14
       algorithm: !php/const PASSWORD_ARGON2I
 ```
+#### 2 Import routes
+```yaml
+UserBundle:
+  resource: '@UserBundle/Resources/config/routes.yaml'
+ 
+# POST users - Create user
+# PUT users​/{id} - Update user
+# GET users​/{id} - Get user
+# GET ​users - List users
+# GET users​/statuses - List available user status
+# DELETE ​users​/{id} - Delete user
+# POST users​/change-password - Change user password
+```
 
+#### 3 Register Listener (config/services.yaml)
+```yaml
+       tags:
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::ERROR_RESPONSE }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::CREATE_RESPONSE }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::UPDATE_RESPONSE }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::DELETE_ITEM_RESPONSE }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::CHANGE_PASSWORD }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::CHANGED_PASSWORD }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::GET_ITEM_RESPONSE }
+         - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::LIST_RESPONSE }
+```
 # COMMANDS
-Checking if you have all registered listeners
-```
-bin/console dawbed:debug:event_listener  
-```
+
+`bin/console dawbed:debug:event_listener` - Checking if you have all registered listeners( it's auto run while clear cache )
+

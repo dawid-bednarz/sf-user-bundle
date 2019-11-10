@@ -7,14 +7,16 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle;
 
+use DawBed\ComponentBundle\DependencyInjection\ChildrenBundle\ComponentBundleInterface;
 use DawBed\UserBundle\DependencyInjection\Compiler\DoctrineResolveTargetEntityPass;
 use DawBed\UserBundle\DependencyInjection\UserExtension;
+use DawBed\UserBundle\Event\Events;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class UserBundle extends Bundle
+class UserBundle extends Bundle implements ComponentBundleInterface
 {
     public function build(ContainerBuilder $container)
     {
@@ -32,6 +34,16 @@ class UserBundle extends Bundle
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
         }
+    }
+
+    public static function getAlias(): string
+    {
+        return UserExtension::ALIAS;
+    }
+
+    public static function getEvents(): ?string
+    {
+        return Events::class;
     }
 
     public function getContainerExtension(): UserExtension

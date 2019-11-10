@@ -2,7 +2,7 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <mapped-superclass name="DawBed\UserBundle\Entity\AbstractUser">
+    <mapped-superclass name="DawBed\UserBundle\Entity\AbstractUser" repository-class="DawBed\UserBundle\Repository\UserRepository">
         <id name="id" type="guid" column="id">
             <generator strategy="UUID"/>
         </id>

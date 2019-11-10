@@ -7,50 +7,49 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\Service;
 
+use DawBed\UserBundle\DTO\PasswordSetting;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PasswordService
 {
-    private $minLength;
-    private $autoGenerate;
-    private $algorithm;
+    private $passwordSetting;
 
-    function __construct(int $minLength, bool $autoGenerate, string $algorithm)
+    function __construct(PasswordSetting $passwordSetting)
     {
-        $this->minLength = $minLength;
-        $this->autoGenerate = $autoGenerate;
-        $this->algorithm = $algorithm;
+        $this->passwordSetting = $passwordSetting;
     }
 
     public function getConstraints(): array
     {
         $constraints = [];
-        $constraints[] = new Length(['min' => $this->minLength]);
-        if (!$this->autoGenerate) {
+        $constraints[] = new Length(['min' => $this->passwordSetting->getMinLength()]);
+        if (!$this->passwordSetting->isAutoGenerate()) {
             $constraints[] = new NotBlank();
         }
         return $constraints;
     }
 
-    public function getMinLength(): int
-    {
-        return $this->minLength;
-    }
-
-    public function isAutoGenerate(): bool
-    {
-        return $this->autoGenerate;
-    }
-
-    public function getAlgorithm(): string
-    {
-        return $this->algorithm;
-    }
-
     public function generate(): string
     {
-        return uniqid();
+        return $this->hash(uniqid());
     }
 
+    public function hash(string $password): string
+    {
+        return password_hash($password, $this->passwordSetting->getAlgorithm());
+    }
+
+    public static function valid(string $originPassword, string $password): bool
+    {
+        if (password_verify($password, $originPassword) !== false) {
+            return true;
+        }
+        return false;
+    }
+
+    public function __call($name, $arguments)
+    {
+        return $this->passwordSetting->$name(...$arguments);
+    }
 }

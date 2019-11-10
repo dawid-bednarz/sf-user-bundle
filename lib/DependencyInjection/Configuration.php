@@ -10,6 +10,7 @@ namespace DawBed\UserBundle\DependencyInjection;
 use DawBed\ComponentBundle\Configuration\Entity;
 use DawBed\UserBundle\Entity\AbstractUser;
 use DawBed\UserBundle\Entity\AbstractUserStatus;
+use DawBed\UserBundle\Entity\AbstractUserToken;
 use DawBed\UserBundle\Entity\User;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -28,6 +29,7 @@ class Configuration implements ConfigurationInterface
         $entity
             ->new(AbstractUser::class, AbstractUser::class)
             ->new(AbstractUserStatus::class, AbstractUserStatus::class)
+            ->new(AbstractUserToken::class, AbstractUserToken::class)
             ->end();
 
         return $treeBuilder;
@@ -40,9 +42,6 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('password')
             ->isRequired()
             ->children();
-        $password
-            ->scalarNode('auto_generate')
-            ->end();
         $password
             ->scalarNode('min_length')
             ->validate()

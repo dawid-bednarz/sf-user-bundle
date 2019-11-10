@@ -1,0 +1,3 @@
+dawbed_confirmation_bundle:
+    token_types:
+          - !php/const DawBed\UserBundle\Enum\TokenEnum::CHANGE_PASSWORD_TYPE

@@ -5,7 +5,7 @@ services:
         public: false
     DawBed\UserBundle\:
         resource: '%user_bundle_dir%/*'
-        exclude: '%user_bundle_dir%/{DependencyInjection,Entity,Migrations,Tests}'
+        exclude: '%user_bundle_dir%/{DependencyInjection,Entity,Tests,Model}'
     DawBed\UserBundle\EventListener\MappingListener:
         tags:
             - { name: doctrine.event_listener, event: loadClassMetadata }

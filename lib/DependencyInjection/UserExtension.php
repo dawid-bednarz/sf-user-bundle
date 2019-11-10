@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace DawBed\UserBundle\DependencyInjection;
 
 use DawBed\PHPClassProvider\ClassProvider;
-use DawBed\UserBundle\Service\PasswordService;
+use DawBed\UserBundle\DTO\PasswordSetting;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -25,6 +25,8 @@ class UserExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('user_bundle_dir', dirname(__DIR__));
         $loader = $this->prepareLoader($container);
         $loader->load('services.yaml');
+        $loader->load('packages/confirmation_bundle.yaml');
+        $loader->load('packages/context_bundle.yaml');
     }
 
     public function load(array $configs, ContainerBuilder $container): void
@@ -33,7 +35,7 @@ class UserExtension extends Extension implements PrependExtensionInterface
         $config = $this->processConfiguration($configuration, $configs);
         $this->prepareLoader($container);
         $this->prepareEntityProvider($config['entities'], $container);
-        $this->preparePasswordService($config['password'], $container);
+        $this->preparePasswordSetting($config['password'], $container);
     }
 
     public function getAlias(): string
@@ -53,13 +55,13 @@ class UserExtension extends Extension implements PrependExtensionInterface
         }
     }
 
-    private function preparePasswordService(array $passwordOptions, ContainerBuilder $container) : void
+    private function preparePasswordSetting(array $passwordOptions, ContainerBuilder $container) : void
     {
-        $container->setDefinition(PasswordService::class, new Definition(PasswordService::class, [
+        $container->setDefinition(PasswordSetting::class, new Definition(PasswordSetting::class, [
                 $passwordOptions['min_length'],
-                $passwordOptions['auto_generate'],
                 $passwordOptions['algorithm']
             ]
         ));
+
     }
 }
