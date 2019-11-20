@@ -95,6 +95,7 @@ abstract class AbstractUser implements UserInterface
             $userStatus = ClassProvider::new(AbstractUserStatus::class);
             $userStatus->setUser($this);
             $userStatus->setStatus($status);
+            $userStatus->setCreatedAt(new DateTime());
             $this->statuses->add($userStatus);
         }
         return $this;

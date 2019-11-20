@@ -8,9 +8,12 @@ declare(strict_types=1);
 namespace DawBed\UserBundle\Entity;
 
 use DawBed\StatusBundle\Entity\AbstractStatus;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 abstract class AbstractUserStatus
 {
+    use TimestampableEntity;
+
     protected $id;
     protected $status;
     protected $user;

@@ -14,7 +14,7 @@
                 <join-column name="status_id" nullable="false" referenced-column-name="id" on-delete="CASCADE"/>
             </join-columns>
         </many-to-one>
-
+        <field name="createdAt" type="datetime" nullable="false" />
         <many-to-one field="user" target-entity="DawBed\UserBundle\Entity\AbstractUser" fetch="LAZY" inversed-by="statuses">
             <join-columns>
                 <join-column name="user_id" nullable="false" referenced-column-name="id" on-delete="CASCADE"/>
