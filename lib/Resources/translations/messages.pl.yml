@@ -1,0 +1,7 @@
+user:
+  change_password:
+    name: 'Zmiana hasła'
+    description: 'Użytkownik lub system zażądał zmiany hasła.'
+  change_email:
+    name: 'Zmiana adresu e-mail'
+    description: 'Użytkownik lub administrator zażądał zmiany adresu e-mail.'

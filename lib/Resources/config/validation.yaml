@@ -8,3 +8,14 @@ DawBed\UserBundle\Model\WriteModel:
          email:
            - NotBlank: { groups: [create, update] }
            - Email: { groups: [create, update] }
+
+DawBed\UserBundle\Model\ChangeEmailModel:
+  constraints:
+    - DawBed\ComponentBundle\Validator\Constraints\UniqueEntity:
+        entityClass: DawBed\UserBundle\Entity\AbstractUser
+        field: email
+        groups: [update]
+  properties:
+    email:
+      - NotBlank: { groups: [update] }
+      - Email: { groups: [update] }

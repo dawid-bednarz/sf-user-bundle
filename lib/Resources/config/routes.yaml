@@ -36,5 +36,10 @@ deleteItemUser:
 
 changeUserPassword:
   path: /users/change-password
-  methods: [POST,OPTIONS]
+  methods: [PATCH,OPTIONS]
   controller: DawBed\UserBundle\Controller\UserController::changePassword
+
+changeUserEmail:
+  path: /users/change-email
+  methods: [PATCH,OPTIONS]
+  controller: DawBed\UserBundle\Controller\UserController::changeEmail

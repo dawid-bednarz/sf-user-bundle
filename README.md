@@ -14,6 +14,12 @@ dawbed_user_bundle:
       min_length: 14
       algorithm: !php/const PASSWORD_ARGON2I
 ```
+#### 2. Add to your User, UserStatus - schema definition
+```xml
+   <field name="createdAt" type="datetime">
+      <gedmo:timestampable on="create"/>
+   </field>
+```
 #### 2 Import routes
 ```yaml
 UserBundle:
@@ -25,7 +31,8 @@ UserBundle:
 # GET ​users - List users
 # GET users​/statuses - List available user status
 # DELETE ​users​/{id} - Delete user
-# POST users​/change-password - Change user password
+# PATCH users​/change-password - Change user password
+# PATCH  users/change-email - Change user email
 ```
 
 #### 3 Register Listener (config/services.yaml)

@@ -19,6 +19,8 @@ class Events extends AbstractEvents
     const DELETE_ITEM_RESPONSE = DeleteEvent::class;
     const CHANGE_PASSWORD = ChangePasswordEvent::class;
     const CHANGED_PASSWORD = ChangedPasswordEvent::class;
+    const CHANGE_EMAIL = ChangeEmailEvent::class;
+    const CHANGED_EMAIL = ChangedEmailEvent::class;
 
     const ALL = [
         self::CREATE_RESPONSE => self::REQUIRED,
@@ -28,7 +30,9 @@ class Events extends AbstractEvents
         self::LIST_STATUS_RESPONSE => self::REQUIRED,
         self::DELETE_ITEM_RESPONSE => self::REQUIRED,
         self::CHANGE_PASSWORD => self::REQUIRED,
-        self::CHANGED_PASSWORD => self::REQUIRED
+        self::CHANGED_PASSWORD => self::REQUIRED,
+        self::CHANGE_EMAIL => self::REQUIRED,
+        self::CHANGED_EMAIL => self::REQUIRED,
     ];
 
     protected function getAll(): array

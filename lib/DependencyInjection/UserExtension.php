@@ -27,6 +27,7 @@ class UserExtension extends Extension implements PrependExtensionInterface
         $loader->load('services.yaml');
         $loader->load('packages/confirmation_bundle.yaml');
         $loader->load('packages/context_bundle.yaml');
+        $loader->load('packages/status_bundle.yaml');
     }
 
     public function load(array $configs, ContainerBuilder $container): void
@@ -62,6 +63,5 @@ class UserExtension extends Extension implements PrependExtensionInterface
                 $passwordOptions['algorithm']
             ]
         ));
-
     }
 }

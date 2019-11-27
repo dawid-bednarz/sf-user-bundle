@@ -1,10 +1,12 @@
 <?php
-namespace DawBed\UserBundle\Enum;
+
 /**
  * @author Dawid Bednarz( dawid@bednarz.pro )
  * @license Read README.md file for more information and licence uses
  */
-class GeneralEnum
+
+namespace DawBed\UserBundle\Event;
+
+class ChangedEmailEvent extends AbstractEvent
 {
-    const STATUS_GROUP = 'user';
 }

@@ -16,10 +16,10 @@
                 <join-column name="token_id" nullable="false" referenced-column-name="id"/>
             </join-columns>
         </one-to-one>
-        <one-to-one field="user" target-entity="DawBed\UserBundle\Entity\AbstractUser" fetch="LAZY">
+        <many-to-one field="user" target-entity="DawBed\UserBundle\Entity\AbstractUser" fetch="LAZY">
             <join-columns>
                 <join-column name="user_id" nullable="false" referenced-column-name="id" on-delete="CASCADE"/>
             </join-columns>
-        </one-to-one>
+        </many-to-one>
     </mapped-superclass>
 </doctrine-mapping>

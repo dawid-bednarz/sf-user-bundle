@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace DawBed\UserBundle\Service;
+namespace DawBed\UserBundle\Utils;
 
 use DawBed\UserBundle\DTO\PasswordSetting;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class PasswordService
+class Password
 {
     private $passwordSetting;
 
@@ -24,9 +24,7 @@ class PasswordService
     {
         $constraints = [];
         $constraints[] = new Length(['min' => $this->passwordSetting->getMinLength()]);
-        if (!$this->passwordSetting->isAutoGenerate()) {
-            $constraints[] = new NotBlank();
-        }
+
         return $constraints;
     }
 

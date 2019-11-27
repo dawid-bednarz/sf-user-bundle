@@ -9,27 +9,22 @@ namespace DawBed\UserBundle\Model;
 
 use DawBed\ComponentBundle\Enum\WriteTypeEnum;
 use DawBed\ComponentBundle\Validator\Constraints\UniqueEntityInterface;
-use DawBed\StatusBundle\Entity\AbstractStatus;
 use DawBed\UserBundle\Entity\AbstractUser;
-use DawBed\UserBundle\Entity\AbstractUserStatus;
 use DawBed\UserBundle\Model\Criteria\WriteCriteria;
-use Doctrine\Common\Collections\ArrayCollection;
 
 class WriteModel implements UniqueEntityInterface
 {
     private $entity;
     private $email;
     private $password;
-    private $statuses;
     private $criteria;
 
     public function __construct(WriteCriteria $criteria, AbstractUser $entity)
     {
-        $this->statuses = new ArrayCollection();
         $this->criteria = $criteria;
         $this->entity = $entity;
         if ($criteria->hasStatus()) {
-            $this->statuses->add($criteria->getStatus());
+            $this->entity->add($criteria->getStatus());
         }
     }
 
@@ -45,20 +40,8 @@ class WriteModel implements UniqueEntityInterface
 
     public function prepareEntity(): AbstractUser
     {
-        $this->entity->getStatuses()->map(function (AbstractUserStatus $us) {
-            if (!$this->getStatuses()->contains($us->getStatus())) {
-                $this->entity->removeStatus($us->getStatus());
-            }
-        });
-        $this->getStatuses()->map(function (AbstractStatus $status) {
-            $this->entity->addStatus($status);
-        });
-        $this->entity
-            ->setEmail($this->email)
-            ->setPassword($this->password);
-
         if ($this->is(WriteTypeEnum::CREATE)) {
-            $this->entity->setCreatedAt(new \DateTime('NOW'));
+            $this->entity->setEmail($this->email);
         }
 
         return $this->entity;
@@ -84,17 +67,6 @@ class WriteModel implements UniqueEntityInterface
     public function setEmail(string $email): WriteModel
     {
         $this->email = $email;
-        return $this;
-    }
-
-    public function getStatuses(): ArrayCollection
-    {
-        return $this->statuses;
-    }
-
-    public function setStatuses(ArrayCollection $statuses): WriteModel
-    {
-        $this->statuses = $statuses;
         return $this;
     }
 

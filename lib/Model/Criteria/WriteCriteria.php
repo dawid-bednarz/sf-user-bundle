@@ -14,7 +14,7 @@ class WriteCriteria
 {
     private $id;
     private $status;
-    private $createdByDifferentUser = false;
+    private $byDifferentUser = false;
     private $type;
 
     public function __construct(string $type)
@@ -51,14 +51,16 @@ class WriteCriteria
         return $this->status !== null;
     }
 
-    public function isCreatedByDifferentUser(): bool
+    public function isByDifferentUser(): bool
     {
-        return $this->createdByDifferentUser;
+        return $this->byDifferentUser;
     }
 
-    public function setCreatedByDifferentUser(bool $createdByDifferentUser): void
+    public function setByDifferentUser(bool $byDifferentUser): WriteCriteria
     {
-        $this->createdByDifferentUser = $createdByDifferentUser;
+        $this->byDifferentUser = $byDifferentUser;
+
+        return $this;
     }
 
     public function is(string $type): bool

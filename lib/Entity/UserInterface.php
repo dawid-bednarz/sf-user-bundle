@@ -25,9 +25,9 @@ interface UserInterface
 
     public function setPassword(string $password): UserInterface;
 
-    public function getCreatedAt(): ?DateTime;
+    public function getCreatedAt();
 
-    public function setCreatedAt(DateTime $createdAt): UserInterface;
+    public function setCreatedAt(DateTime $createdAt);
 
     public function getStatuses() : ?Collection;
 

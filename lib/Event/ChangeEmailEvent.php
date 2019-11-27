@@ -7,4 +7,4 @@
 
 namespace DawBed\UserBundle\Event;
 
-class ChangePasswordEvent extends AbstractTokenEvent {}
+class ChangeEmailEvent extends AbstractTokenEvent {}

@@ -5,7 +5,8 @@ namespace DawBed\UserBundle\Controller;
 use DawBed\ComponentBundle\Enum\WriteTypeEnum;
 use DawBed\ComponentBundle\Helper\EventResponseController;
 use DawBed\StatusBundle\Provider;
-use DawBed\UserBundle\Enum\GeneralEnum;
+use DawBed\UserBundle\Enum\StatusEnum;
+use DawBed\UserBundle\Event\ChangedEmailEvent;
 use DawBed\UserBundle\Event\ChangedPasswordEvent;
 use DawBed\UserBundle\Event\CreateEvent;
 use DawBed\UserBundle\Event\DeleteEvent;
@@ -13,14 +14,16 @@ use DawBed\UserBundle\Event\GetItemEvent;
 use DawBed\UserBundle\Event\ListEvent;
 use DawBed\UserBundle\Event\ListStatusEvent;
 use DawBed\UserBundle\Event\UpdateEvent;
+use DawBed\UserBundle\Form\ChangeEmailType;
 use DawBed\UserBundle\Form\ChangePasswordType;
 use DawBed\UserBundle\Form\ListType;
 use DawBed\UserBundle\Form\WriteType;
 use DawBed\UserBundle\Model\Criteria\ListCriteria;
 use DawBed\UserBundle\Model\Criteria\WriteCriteria;
-use DawBed\UserBundle\Service\ChangePasswordService;
 use DawBed\UserBundle\Service\GetService;
 use DawBed\UserBundle\Service\WriteService;
+use DawBed\UserBundle\Utils\ChangeEmail;
+use DawBed\UserBundle\Utils\ChangePassword;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,7 +39,7 @@ class UserController extends AbstractController
     public function create(Request $request, WriteService $service): Response
     {
         $criteria = new WriteCriteria(WriteTypeEnum::CREATE);
-        $criteria->setCreatedByDifferentUser(true);
+        $criteria->setByDifferentUser(true);
         $model = $service->prepareModel($criteria);
 
         $form = $this->createForm(WriteType::class, $model, [
@@ -62,7 +65,11 @@ class UserController extends AbstractController
 
     public function update(string $id, Request $request, WriteService $service): Response
     {
-        $model = $service->prepareModel((new WriteCriteria(WriteTypeEnum::UPDATE))->setId($id));
+        $criteria=(new WriteCriteria(WriteTypeEnum::UPDATE))
+            ->setByDifferentUser(true)
+            ->setId($id);
+
+        $model = $service->prepareModel($criteria);
 
         $form = $this->createForm(WriteType::class, $model, [
             'validation_groups' => WriteTypeEnum::UPDATE,
@@ -85,12 +92,9 @@ class UserController extends AbstractController
         return $response;
     }
 
-    public function changePassword(Request $request, ChangePasswordService $service): Response
+    public function changePassword(Request $request, ChangePassword $service): Response
     {
-        $form = $this->createForm(ChangePasswordType::class, null, [
-            'validation_groups' => WriteTypeEnum::CREATE,
-            'method' => Request::METHOD_POST
-        ]);
+        $form = $this->createForm(ChangePasswordType::class);
 
         $form->handleRequest($request);
 
@@ -105,6 +109,29 @@ class UserController extends AbstractController
         $em = $service->make($model);
 
         $response = $this->response(new ChangedPasswordEvent($model->getUser()));
+
+        $em->flush();
+
+        return $response;
+    }
+
+    public function changeEmail(Request $request, ChangeEmail $service): Response
+    {
+        $form = $this->createForm(ChangeEmailType::class);
+
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted()) {
+            return $this->notSubmittedForm();
+        }
+        if (!$form->isValid()) {
+            return $this->invalidForm($form);
+        }
+        $model = $form->getData();
+
+        $em = $service->make($model);
+
+        $response = $this->response(new ChangedEmailEvent($model->getUser()));
 
         $em->flush();
 
@@ -150,7 +177,7 @@ class UserController extends AbstractController
 
     public function statuses(Provider $statusProvider): Response
     {
-        $statuses = $statusProvider->getGroupQueryBuilder(GeneralEnum::STATUS_GROUP)
+        $statuses = $statusProvider->getGroupQueryBuilder(StatusEnum::BASE_GROUP)
             ->getQuery()
             ->getResult();
 

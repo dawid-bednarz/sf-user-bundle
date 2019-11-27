@@ -7,16 +7,17 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\Entity;
 
-use DateTime;
 use DawBed\PHPClassProvider\ClassProvider;
 use DawBed\StatusBundle\Entity\AbstractStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\PersistentCollection;
+use Gedmo\Timestampable\Traits\Timestampable;
 
 abstract class AbstractUser implements UserInterface
 {
+    use Timestampable;
+
     protected $id;
 
     protected $email;
@@ -24,8 +25,6 @@ abstract class AbstractUser implements UserInterface
     protected $status;
 
     protected $password;
-
-    protected $createdAt;
 
     protected $statuses;
 
@@ -70,18 +69,6 @@ abstract class AbstractUser implements UserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTime $createdAt): UserInterface
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
     public function getStatuses(): ?Collection
     {
         return $this->statuses;
@@ -95,7 +82,6 @@ abstract class AbstractUser implements UserInterface
             $userStatus = ClassProvider::new(AbstractUserStatus::class);
             $userStatus->setUser($this);
             $userStatus->setStatus($status);
-            $userStatus->setCreatedAt(new DateTime());
             $this->statuses->add($userStatus);
         }
         return $this;

@@ -5,53 +5,47 @@
  * @license Read README.md file for more information and licence uses
  */
 
-namespace DawBed\UserBundle\Service;
+namespace DawBed\UserBundle\Utils;
 
 use DawBed\ComponentBundle\Service\EventDispatcher;
-use DawBed\ContextBundle\Provider;
-use DawBed\UserBundle\Enum\ContextEnum;
+use DawBed\StatusBundle\Provider;
+use DawBed\UserBundle\Entity\AbstractUser;
+use DawBed\UserBundle\Enum\StatusEnum;
 use DawBed\UserBundle\Enum\TokenEnum;
 use DawBed\UserBundle\Event\ChangePasswordEvent;
 use DawBed\UserBundle\Model\ChangePasswordModel;
-use DawBed\UserBundle\Model\Criteria\TokenCriteria;
-use \DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ChangePasswordService
+class ChangePassword
 {
     private $tokenService;
-    private $contextProvider;
     private $eventDispatcher;
     private $passwordService;
     private $entityManager;
+    private $statusProvider;
 
     public function __construct(
-        TokenService $tokenService,
-        Provider $contextProvider,
+        Token $token,
+        Provider $statusProvider,
         EventDispatcher $eventDispatcher,
-        PasswordService $passwordService,
+        Password $password,
         EntityManagerInterface $entityManager
     )
     {
-        $this->tokenService = $tokenService;
-        $this->contextProvider = $contextProvider;
+        $this->tokenService = $token;
         $this->eventDispatcher = $eventDispatcher;
-        $this->passwordService = $passwordService;
+        $this->passwordService = $password;
         $this->entityManager = $entityManager;
+        $this->statusProvider = $statusProvider;
     }
 
     public function request(AbstractUser $user): void
     {
-        $context = $this->contextProvider->get(ContextEnum::CHANGE_PASSWORD);
-        $tokenCriteria = new TokenCriteria(TokenEnum::CHANGE_PASSWORD_TYPE, new DateInterval('P7D'), $user, $context);
-        $userToken = $this->tokenService->prepare($tokenCriteria);
+        $user->addStatus($this->statusProvider->get(StatusEnum::CHANGE_PASSWORD));
+
+        $userToken = $this->tokenService->prepare(TokenEnum::CHANGE_PASSWORD_TYPE, $user);
 
         $this->eventDispatcher->dispatch(new ChangePasswordEvent($user, $userToken));
-    }
-
-    public function getPasswordService(): PasswordService
-    {
-        return $this->passwordService;
     }
 
     public function make(ChangePasswordModel $model): EntityManagerInterface
@@ -60,7 +54,8 @@ class ChangePasswordService
 
         $user = $this->tokenService->tryGetUser($token);
 
-        $user->setPassword($this->passwordService->hash($model->getPassword()));
+        $user->removeStatus($this->statusProvider->get(StatusEnum::CHANGE_PASSWORD))
+            ->setPassword($this->passwordService->hash($model->getPassword()));
 
         $model->setUser($user);
 

@@ -3,4 +3,8 @@ dawbed_context_bundle:
       !php/const DawBed\UserBundle\Enum\ContextEnum::CHANGE_PASSWORD:
          name: 'user.change_password.name'
          description: 'user.change_password.description'
-         groups: ['user']
+         groups: [!php/const DawBed\UserBundle\Enum\ContextEnum::BASE_GROUP]
+      !php/const DawBed\UserBundle\Enum\ContextEnum::CHANGE_EMAIL:
+         name: 'user.change_email.name'
+         description: 'user.change_email.description'
+         groups: [!php/const DawBed\UserBundle\Enum\ContextEnum::BASE_GROUP]

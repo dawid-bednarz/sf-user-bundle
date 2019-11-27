@@ -7,7 +7,11 @@ use DawBed\PHPClassProvider\ClassProvider;
 use DawBed\UserBundle\Entity\AbstractUser;
 use DawBed\UserBundle\Model\WriteModel;
 use DawBed\UserBundle\Model\Criteria\WriteCriteria;
+use DawBed\UserBundle\Utils\ChangeEmail;
+use DawBed\UserBundle\Utils\ChangePassword;
+use DawBed\UserBundle\Utils\Password;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -17,14 +21,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class WriteService
 {
     private $entityManager;
-    private $changePasswordService;
+    private $container;
+    private $password;
 
     function __construct(EntityManagerInterface $entityManager,
-                         ChangePasswordService $changePasswordService
+                         Password $password,
+                         ContainerInterface $container
     )
     {
         $this->entityManager = $entityManager;
-        $this->changePasswordService = $changePasswordService;
+        $this->container = $container;
+        $this->password = $password;
     }
 
     public function prepareModel(WriteCriteria $criteria): WriteModel
@@ -48,23 +55,41 @@ class WriteService
 
     public function make(WriteModel $model): EntityManagerInterface
     {
-        if (!$model->is(WriteTypeEnum::DELETE)) {
-            $this->write($model);
-        } else {
+        if ($model->is(WriteTypeEnum::DELETE)) {
             $this->entityManager->remove($model->getEntity());
+            return $this->entityManager;
+        }
+        if ($model->is(WriteTypeEnum::CREATE)) {
+            $this->create($model);
+        } elseif ($model->is(WriteTypeEnum::UPDATE)) {
+            $this->update($model);
+        }
+        if (!$model->getCriteria()->isByDifferentUser()) {
+            $model->getEntity()->setPassword($this->password->hash($model->getPassword()));
         }
 
         return $this->entityManager;
     }
 
-    private function write(WriteModel $model): void
+    private function create(WriteModel $model): void
     {
-        if ($model->getCriteria()->isCreatedByDifferentUser()) {
-            $this->changePasswordService->request($model->getEntity());
-            $model->setPassword($this->changePasswordService->getPasswordService()->generate());
-        } else {
-            $model->setPassword($this->changePasswordService->getPasswordService()->hash($model->getPassword()));
+        $entity = $model->prepareEntity();
+
+        if ($model->getCriteria()->isByDifferentUser()) {
+            $this->container->get(ChangePassword::class)->request($entity);
+            $entity->setPassword($this->password->generate());
         }
-        $this->entityManager->persist($model->prepareEntity());
+        $this->entityManager->persist($entity);
+    }
+
+    private function update(WriteModel $model): void
+    {
+        $entity = $model->prepareEntity();
+
+        if ($model->getEmail() !== $entity->getEmail()) {
+            $this->container->get(ChangeEmail::class)->request($entity, $model->getEmail());
+        }
+
+        $this->entityManager->persist($entity);
     }
 }

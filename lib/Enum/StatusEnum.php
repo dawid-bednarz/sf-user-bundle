@@ -7,8 +7,9 @@
 
 namespace DawBed\UserBundle\Enum;
 
-class TokenEnum
+class StatusEnum
 {
-    const CHANGE_PASSWORD_TYPE = 'user_change_password';
-    const CHANGE_EMAIL_TYPE = 'user_change_email';
+    const BASE_GROUP = 'user';
+    const CHANGE_PASSWORD = 'user_change_password';
+    const CHANGE_EMAIL = 'user_change_email';
 }

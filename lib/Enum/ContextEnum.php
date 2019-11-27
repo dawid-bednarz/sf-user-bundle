@@ -8,5 +8,6 @@ namespace DawBed\UserBundle\Enum;
 class ContextEnum
 {
     const BASE_GROUP = 'user';
-    const CHANGE_PASSWORD = 'userChangePassword';
+    const CHANGE_PASSWORD = 'user_change_password';
+    const CHANGE_EMAIL = 'user_change_email';
 }
