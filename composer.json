@@ -3,7 +3,7 @@
   "description": "User logic for symfony",
   "type": "lib",
   "require": {
-    "php": "^7.2",
+    "php": "^7.4",
     "symfony/framework-bundle": "^4.1",
     "dawid-bednarz/sf-component-bundle": "dev-master",
     "dawid-bednarz/sf-context-bundle": "dev-master",

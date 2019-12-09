@@ -27,7 +27,7 @@ class ChangeEmailType extends AbstractType
             'class' => AbstractToken::class,
             'choice_value' => 'value',
             'query_builder' => function ($repo) {
-                $qb = $repo->getValidTokenQueryBuilder('token');
+                $qb = $repo->createQueryBuilder('token');
                 $qb->andWhere('token.type=:type')
                     ->setParameter('type', TokenEnum::CHANGE_EMAIL_TYPE);
 

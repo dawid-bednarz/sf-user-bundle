@@ -10,7 +10,7 @@ class PasswordSetting
     private $minLength;
     private $algorithm;
 
-    function __construct(int $minLength, string $algorithm)
+    function __construct(int $minLength, ?string $algorithm)
     {
         $this->minLength = $minLength;
         $this->algorithm = $algorithm;

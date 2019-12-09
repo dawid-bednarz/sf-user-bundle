@@ -74,8 +74,9 @@ class WriteService
     private function create(WriteModel $model): void
     {
         $entity = $model->prepareEntity();
+        $criteria = $model->getCriteria();
 
-        if ($model->getCriteria()->isByDifferentUser()) {
+        if ($criteria->isByDifferentUser()) {
             $this->container->get(ChangePassword::class)->request($entity);
             $entity->setPassword($this->password->generate());
         }
@@ -85,8 +86,12 @@ class WriteService
     private function update(WriteModel $model): void
     {
         $entity = $model->prepareEntity();
+        $criteria = $model->getCriteria();
 
-        if ($model->getEmail() !== $entity->getEmail()) {
+        if ($criteria->isChangePassword()) {
+            $this->container->get(ChangePassword::class)->request($entity);
+        }
+        if ($criteria->isChangeEmail() || $model->getEmail() !== $entity->getEmail()) {
             $this->container->get(ChangeEmail::class)->request($entity, $model->getEmail());
         }
 

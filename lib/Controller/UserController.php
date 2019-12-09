@@ -65,7 +65,7 @@ class UserController extends AbstractController
 
     public function update(string $id, Request $request, WriteService $service): Response
     {
-        $criteria=(new WriteCriteria(WriteTypeEnum::UPDATE))
+        $criteria = (new WriteCriteria(WriteTypeEnum::UPDATE))
             ->setByDifferentUser(true)
             ->setId($id);
 

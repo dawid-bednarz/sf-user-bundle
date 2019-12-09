@@ -2,13 +2,11 @@
 
 namespace DawBed\UserBundle\Form;
 
-use DawBed\PHPClassProvider\ClassProvider;
-use DawBed\StatusBundle\Entity\AbstractStatus;
 use DawBed\UserBundle\Model\WriteModel;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -20,20 +18,9 @@ class WriteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email');
-/*        $builder->add('statuses', CollectionType::class, [
-            'entry_type' => EntityType::class,
-            'entry_options' => [
-                'class' => ClassProvider::get(AbstractStatus::class),
-                'query_builder' => function ($repo) {
-                    $statuses = $repo->createQueryBuilder('s');
-                    $statuses->join('s.groups', 'sg', 'WITH', 'sg.name=:name')
-                        ->setParameter('name', 'user');
-                    return $statuses;
-                }
-            ],
-            'allow_add' => true,
-            'allow_delete' => true
-        ]);*/
+        if ($options['method'] == Request::METHOD_PUT) {
+            $this->updateFields($builder, $options);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -46,5 +33,15 @@ class WriteType extends AbstractType
     public function getBlockPrefix(): string
     {
         return 'UserWrite';
+    }
+
+    private function updateFields(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('changePassword', CheckboxType::class, [
+            'false_values' => ['false', '0'],
+        ]);
+        $builder->add('changeEmail', CheckboxType::class, [
+            'false_values' => ['false', '0'],
+        ]);
     }
 }

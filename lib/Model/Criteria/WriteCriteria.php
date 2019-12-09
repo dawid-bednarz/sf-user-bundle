@@ -16,6 +16,8 @@ class WriteCriteria
     private $status;
     private $byDifferentUser = false;
     private $type;
+    private $changePassword = false;
+    private $changeEmail = false;
 
     public function __construct(string $type)
     {
@@ -66,5 +68,27 @@ class WriteCriteria
     public function is(string $type): bool
     {
         return $this->type->is($type);
+    }
+
+    public function isChangePassword(): bool
+    {
+        return $this->changePassword;
+    }
+
+    public function setChangePassword(bool $changePassword): WriteCriteria
+    {
+        $this->changePassword = $changePassword;
+        return $this;
+    }
+
+    public function isChangeEmail(): bool
+    {
+        return $this->changeEmail;
+    }
+
+    public function setChangeEmail(bool $changeEmail): WriteCriteria
+    {
+        $this->changeEmail = $changeEmail;
+        return $this;
     }
 }

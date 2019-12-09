@@ -17,5 +17,6 @@ DawBed\UserBundle\Model\ChangeEmailModel:
         groups: [update]
   properties:
     email:
-      - NotBlank: { groups: [update] }
       - Email: { groups: [update] }
+    token:
+      - DawBed\ConfirmationBundle\Validator\Constraints\Token\Expired: { groups: [update] }

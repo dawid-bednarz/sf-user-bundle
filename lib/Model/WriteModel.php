@@ -24,7 +24,7 @@ class WriteModel implements UniqueEntityInterface
         $this->criteria = $criteria;
         $this->entity = $entity;
         if ($criteria->hasStatus()) {
-            $this->entity->add($criteria->getStatus());
+            $this->entity->addStatus($criteria->getStatus());
         }
     }
 
@@ -83,5 +83,29 @@ class WriteModel implements UniqueEntityInterface
     public function is(string $type): bool
     {
         return $this->criteria->is($type);
+    }
+
+    public function isChangePassword(): bool
+    {
+        return $this->criteria->isChangePassword();
+    }
+
+    public function setChangePassword(bool $changePassword): WriteModel
+    {
+        $this->criteria->setChangePassword($changePassword);
+
+        return $this;
+    }
+
+    public function isChangeEmail(): bool
+    {
+        return $this->criteria->isChangeEmail();
+    }
+
+    public function setChangeEmail(bool $changeEmail): WriteModel
+    {
+        $this->criteria->setChangeEmail($changeEmail);
+
+        return $this;
     }
 }
